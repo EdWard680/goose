@@ -9,3 +9,10 @@ RUN apt update && apt install -q -y  \
 	rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install pybluez
+
+RUN pip3 install rospkg catkin_pkg pyyaml
+
+RUN mkdir bt_sensor
+WORKDIR bt_sensor
+
+COPY . ./
