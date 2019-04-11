@@ -16,3 +16,5 @@ RUN mkdir bt_sensor
 WORKDIR bt_sensor
 
 COPY . ./
+
+CMD ["/bin/bash", "start.sh"]
