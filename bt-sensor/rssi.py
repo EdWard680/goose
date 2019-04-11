@@ -67,7 +67,7 @@ def talker(btad_list):
     btobj_list = []
     for i,btad in enumerate(btad_list):
         pub_list.append(rospy.Publisher("duck{}".format(i), Int8, queue_size=10))
-        btobj_list.append(BluetoothRSSI(address=btad))
+        btobj_list.append(BluetoothRSSI(addr=btad))
     rate = rospy.Rate(10)
     # rssi_list = []
     # FUTURE: send last rssi instead of 0 values
