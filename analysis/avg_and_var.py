@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-
+from pydoc import locate
 import rospy
-from std_msgs.msg import Int8
+import std_msgs.msg
+from rospy import AnyMsg
 import sys
 
 import matplotlib.pyplot as plt
@@ -27,13 +28,14 @@ ax2.set_label('Variance')
 
 def callback(data):
     global count, total, total_squared, xs, avg_list, line1, fig
-    if data.data != 0:
+    num = data.data
+    if num != 0:
         count += 1
-        total += data.data
-        total_squared += data.data ** 2
+        total += num
+        total_squared += num ** 2
         mean = total / count
         var = (total_squared - (total**2) / count) / count
-        rospy.loginfo("avg: {}, var: {}".format(mean, var))
+        rospy.loginfo("num: {}, avg: {}, var: {}".format(num, mean, var))
         avg_list.append(mean)
         var_list.append(var)
         xs.append(count)
@@ -43,7 +45,7 @@ def callback(data):
 
 def listener(topic, fig, line1):
     rospy.init_node('avg_and_var', anonymous=True)
-    rospy.Subscriber(topic, Int8, callback)
+    rospy.Subscriber(topic, locate(sys.argv[2]), callback)
     prev = count
     while not rospy.core.is_shutdown():
         if (count > prev):
@@ -66,4 +68,5 @@ def listener(topic, fig, line1):
 
 if __name__ == '__main__':
     topic = str(sys.argv[1])
+    print(locate(sys.argv[2]))
     listener(topic, fig, line1)
