@@ -75,6 +75,8 @@ def talker(btad_list):
         for i,pub in enumerate(pub_list):
             rssi = btobj_list[i].get_rssi()
             rospy.loginfo(rssi)
+            if rssi is None:
+                raise(ValueError('rssi is None'))
             pub.publish(Int8(rssi))
             rate.sleep()
 
