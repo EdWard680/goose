@@ -4,4 +4,10 @@ echo Other Macs: $MACS
 echo Our Mac:
 hciconfig
 export ROS_HOSTNAME=`hostname`
+
+while [ -z "$MACS" ]
+do
+	sleep  10
+done
+
 ./rssi.py $MACS

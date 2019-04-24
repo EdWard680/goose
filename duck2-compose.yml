@@ -1,0 +1,19 @@
+version: '3'
+services:
+  scanner:
+    build: ./bt-sensor
+    privileged: true
+    network_mode: "host"
+    environment:
+      ID: "02"
+      DEV_ID: "hci0"
+      MACS: "01:01:01:01:01:00"
+  broadcaster:
+    build: ./bt-sensor
+    privileged: true
+    network_mode: "host"
+    environment:
+      ID: "03"
+      DEV_ID: "hci1"
+      MACS: ""
+    

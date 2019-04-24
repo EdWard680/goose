@@ -1,0 +1,11 @@
+version: '3'
+services:
+  broadcaster:
+    build: ./bt-sensor
+    privileged: true
+    network_mode: "host"
+    environment:
+      ID: "00"
+      DEV_ID: "hci0"
+      MACS: ""
+    
