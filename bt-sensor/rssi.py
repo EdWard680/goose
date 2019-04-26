@@ -3,6 +3,7 @@
 import rospy
 from std_msgs.msg import Int8
 import sys
+import os
 
 import bluetooth
 import bluetooth._bluetooth as bt
@@ -140,11 +141,11 @@ def get_rssis(addrs):
     # restore old filter
     sock.setsockopt( bt.SOL_HCI, bt.HCI_FILTER, old_filter )
 
-def talker(btad_list):
+def talker(btad_list, this_duck):
     rospy.init_node('bluetooth_rssi', anonymous=True)
     pub_list = []
     for i,btad in enumerate(btad_list):
-        pub_list.append(rospy.Publisher("duck{}".format(i), Int8, queue_size=10))
+        pub_list.append(rospy.Publisher("duck{}/rssi/duck{}".format(this_duck, btad[-1]), Int8, queue_size=10))
     
     print("Starting inquiry...")
     for (addr, rssi) in get_rssis(btad_list):
@@ -157,8 +158,9 @@ def talker(btad_list):
 
 if __name__ == '__main__':
     btad_list = [i for i in sys.argv[1:]]
+    this_duck = os.environ.get("ID") or -1
     try:
-        talker(btad_list)
+        talker(btad_list, this_duck)
     except rospy.ROSInterruptException:
         pass
 
