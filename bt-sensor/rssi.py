@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import rospy
 from std_msgs.msg import Int8
 import sys
@@ -145,14 +144,23 @@ def get_rssis(addrs):
 
 def talker(btad_list, this_duck):
     rospy.init_node('bluetooth_rssi', anonymous=True)
+    rospy.loginfo("Initializing...")
     pub_list = []
     for i,btad in enumerate(btad_list):
         for pair in RSSI_PAIRS:
-            if btad[-1] in pair and this_duck in pair:
+            if int(btad[-1]) in pair and this_duck in pair:
+                pub_list.append(rospy.Publisher(
+                    "rssi/duck{}_duck{}".format(*pair),
+                    Int8, 
+                    queue_size=10))
+                
                 break
-        pub_list.append(rospy.Publisher("rssi/{}_{}".format(*pair), Int8, queue_size=10))
+        else:
+            btad_list[i] = None
+            rospy.logwarn("We didn't write extensible code to handle that duck")
+        
+    btad_list = [btad for btad in btad_list if btad is not None]
     
-    print("Starting inquiry...")
     for (addr, rssi) in get_rssis(btad_list):
         if rospy.is_shutdown():
             return 
@@ -163,7 +171,7 @@ def talker(btad_list, this_duck):
 
 if __name__ == '__main__':
     btad_list = [i for i in sys.argv[1:]]
-    this_duck = os.environ.get("ID") or -1
+    this_duck = int(os.environ.get("ID")) or -1
     try:
         talker(btad_list, this_duck)
     except rospy.ROSInterruptException:

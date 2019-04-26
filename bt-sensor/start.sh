@@ -10,4 +10,5 @@ do
 	sleep  10
 done
 
+echo "Starting the scanner..."
 ./rssi.py $MACS
