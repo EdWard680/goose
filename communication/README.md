@@ -8,6 +8,12 @@ If the mqtt broker is not started, start it using:
 If you have Duck I, Duck J, and Duck K, and the the bridge is running on Duck I:
 ## ROS to MQTT
 
+### RSSI
+```
+duck<I>/rssi/duck<M> -> duck<I>/rssi/duck<J>
+duck<I>/rssi/duck<M> -> duck<I>/rssi/duck<K>
+```
+
 ### Distances
 ```
 duck<I>/filtered_distance/duck<M> -> duck<I>/filtered_distance/duck<J>
@@ -25,7 +31,15 @@ duck<I>/odometry/pose -> duck<I>/odometry/pose
 ```
 These are duck I's odometry measurements
 
-## JQTT to ROS
+## MQTT to ROS
+
+### RSSI
+```
+duck<J>/rssi/duck<I>
+duck<J>/rssi/duck<K>
+duck<K>/rssi/duck<I>
+duck<K>/rssi/duck<J>
+```
 
 ### Distances
 ```

@@ -5,6 +5,8 @@ import os
 
 HOST = "localhost"
 NUM_DUCKS = 3
+
+RSSI_MSG_TYPE = "std_msgs.msg:Int8"
 DIST_MSG_TYPE = "std_msgs.msg:Float64"
 ODOM_MSG_TYPE = "std_msgs.msg:Float64"
 
@@ -18,6 +20,16 @@ def print_list_of_dicts(l):
         print()
 
 def gen_ros_to_mqtt(this_duck,other_ducks):
+    rssi = [
+                {
+                    "factory":"mqtt_bridge.bridge:RosToMqttBridge",
+                    "msg_type": RSSI_MSG_TYPE,
+                    "topic_from":"duck{}/rssi/duck{}".format(this_duck,other_duck),
+                    "topic_to":"duck{}/rssi/duck{}".format(this_duck,other_duck)
+                }
+                for other_duck in other_ducks
+            ]
+
     dist = [
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
@@ -27,6 +39,7 @@ def gen_ros_to_mqtt(this_duck,other_ducks):
                 }
                 for param in DIST_PARAMS for other_duck in other_ducks
             ]
+
     odom = [
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
@@ -36,20 +49,32 @@ def gen_ros_to_mqtt(this_duck,other_ducks):
                 }
                 for param in ODOM_PARAMS
             ]
-    l = [*dist,*odom]
+    l = [*rssi,*dist,*odom]
     # print_list_of_dicts(l)
     return l
 
 def gen_mqtt_to_ros(this_duck,other_ducks):
+    ducks = [this_duck, *other_ducks]
+    rssi = [
+                {
+                    "factory":"mqtt_bridge.bridge:MqttToRosBridge",
+                    "msg_type": RSSI_MSG_TYPE,
+                    "topic_from":"duck{}/rssi/duck{}".format(other_duck,duck),
+                    "topic_to":"duck{}/rssi/duck{}".format(other_duck,duck)
+                }
+                for other_duck in other_ducks for duck in ducks if duck is not other_duck
+            ]
+
     dist = [
                 {
                     "factory":"mqtt_bridge.bridge:MqttToRosBridge",
                     "msg_type": DIST_MSG_TYPE,
-                    "topic_from":"duck{}/{}/duck{}".format(other_duck,param,this_duck),
-                    "topic_to":"duck{}/{}/duck{}".format(other_duck,param,this_duck)
+                    "topic_from":"duck{}/{}/duck{}".format(other_duck,param,duck),
+                    "topic_to":"duck{}/{}/duck{}".format(other_duck,param,duck)
                 }
-                for param in DIST_PARAMS for other_duck in other_ducks
+                for param in DIST_PARAMS for other_duck in other_ducks for duck in ducks if duck is not other_duck
             ]
+
     odom = [
                 {
                     "factory":"mqtt_bridge.bridge:MqttToRosBridge",
@@ -59,7 +84,7 @@ def gen_mqtt_to_ros(this_duck,other_ducks):
                 }
                 for other_duck in other_ducks for param in ODOM_PARAMS
             ]
-    l = [*dist,*odom]
+    l = [*rssi,*dist,*odom]
     # print_list_of_dicts(l)
     return l
 
@@ -82,7 +107,7 @@ def gen_config_dict(this_duck, other_ducks):
 
 if __name__ == '__main__':
     
-    this_duck = os.environ.get("ID") or 0
+    this_duck = os.environ.get("ID") or -1
     other_ducks = [duck for duck in range(NUM_DUCKS) if duck is not this_duck]
     config = gen_config_dict(this_duck,other_ducks)
 
