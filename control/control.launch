@@ -1,0 +1,11 @@
+<launch>
+	<arg name="pattern" default="circle" />
+	<arg name="goose" default="false" />
+	<arg name="ducks" default="0 1" />
+	
+	<param name="/x0" value="0.5" type="double" if="$(arg goose)" />
+	
+	<node pkg="goose_control" type="localization.py" name="localization_node" args="$(arg ducks)" output="screen">
+	</node>
+	
+</launch>

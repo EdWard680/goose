@@ -24,7 +24,7 @@ def gen_ros_to_mqtt(this_duck,other_ducks, pubs):
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
                     "msg_type": RSSI_MSG_TYPE,
-                    "topic_from":"rssi/duck{}_duck{}".format(*pair),
+                    "topic_from":"/rssi/duck{}_duck{}".format(*pair),
                     "topic_to":"rssi/duck{}_duck{}".format(*pair)
                 }
                 for pair in RSSI_PAIRS if this_duck in pair and any([x in pair for x in pubs])
@@ -43,8 +43,8 @@ def gen_ros_to_mqtt(this_duck,other_ducks, pubs):
     odom = [
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
-                    "msg_type": DIST_MSG_TYPE,
-                    "topic_from":"odometry/duck{}".format(this_duck),
+                    "msg_type": ODOM_MSG_TYPE,
+                    "topic_from":"/odometry/duck{}".format(this_duck),
                     "topic_to":"odometry/duck{}".format(this_duck)
                 }
             ]
@@ -60,7 +60,7 @@ def gen_mqtt_to_ros(this_duck,other_ducks, pubs):
                     "factory":"mqtt_bridge.bridge:MqttToRosBridge",
                     "msg_type": RSSI_MSG_TYPE,
                     "topic_from":"rssi/duck{}_duck{}".format(*pair),
-                    "topic_to":"rssi/duck{}_duck{}".format(*pair)
+                    "topic_to":"/rssi/duck{}_duck{}".format(*pair)
                 }
                 for pair in RSSI_PAIRS if not(this_duck in pair and any([x in pair for x in pubs]))
             ]
@@ -78,9 +78,9 @@ def gen_mqtt_to_ros(this_duck,other_ducks, pubs):
     odom = [
                 {
                     "factory":"mqtt_bridge.bridge:MqttToRosBridge",
-                    "msg_type": DIST_MSG_TYPE,
+                    "msg_type": ODOM_MSG_TYPE,
                     "topic_from":"odometry/duck{}".format(other_duck),
-                    "topic_to":"odometry/duck{}".format(other_duck)
+                    "topic_to":"/odometry/duck{}".format(other_duck)
                 }
                 for other_duck in other_ducks
             ]

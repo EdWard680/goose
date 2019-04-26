@@ -14,5 +14,5 @@ services:
     network_mode: "host"
     environment:
       ID: "0"
-      HOST: "bathduck"
+      HOST: "192.168.1.70"
       PUB: ""

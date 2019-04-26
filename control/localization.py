@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 from filterpy.kalman import ExtendedKalmanFilter
 from filterpy.common import Q_discrete_white_noise
 import numpy as np
@@ -236,7 +236,7 @@ class Me(object):
 
 if __name__ == '__main__':
     rospy.init_node('pose_filter')
-    duck_ids = [int(arg) for arg in sys.argv[1:]]
+    duck_ids = [int(arg) for arg in rospy.myargv(argv=sys.argv[1:])]
     ekf = make_filter()
     
     me = Me(ekf)
