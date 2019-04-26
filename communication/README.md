@@ -7,7 +7,7 @@ If the mqtt broker is not started, start it using:
 # Topics
 If you have Duck I, Duck J, and Duck K, and the the bridge is running on Duck I:
 ## ROS to MQTT
-
+`ros_topic -> mqtt_topic`
 ### RSSI
 ```
 duck<I>/rssi/duck<M> -> duck<I>/rssi/duck<J>
@@ -25,20 +25,18 @@ These are the distances measured by duck I to duck J
 
 ### Odometry
 ```
-duck<I>/odometry/x -> duck<I>/odometry/x
-duck<I>/odometry/y -> duck<I>/odometry/y
-duck<I>/odometry/pose -> duck<I>/odometry/pose
+duck<I>/odometry/ -> duck<I>/odometry/
 ```
-These are duck I's odometry measurements
+Duck I's odometry measurements
 
 ## MQTT to ROS
-
+`mqtt_topic -> ros_topic`
 ### RSSI
 ```
-duck<J>/rssi/duck<I>
-duck<J>/rssi/duck<K>
-duck<K>/rssi/duck<I>
-duck<K>/rssi/duck<J>
+duck<J>/rssi/duck<I> -> duck<J>/rssi/duck<I>
+duck<J>/rssi/duck<K> -> duck<J>/rssi/duck<K>
+duck<K>/rssi/duck<I> -> duck<K>/rssi/duck<I>
+duck<K>/rssi/duck<J> -> duck<K>/rssi/duck<J>
 ```
 
 ### Distances
@@ -52,15 +50,11 @@ duck<J>/raw_distance/duck<K> -> duck<J>/raw_distance/duck<K>
 duck<K>/raw_distance/duck<I> -> duck<J>/raw_distance/duck<I>
 duck<K>/raw_distance/duck<J> -> duck<J>/raw_distance/duck<J>
 ```
-Distances recieved over JQTT measured by duck J/K to each other duck
+Distances recieved over MQTT measured by duck J/K to each other duck
 
 ### Odometry
 ```
-duck<J>/odometry/x -> duck<J>/odometry/x
-duck<J>/odometry/y -> duck<J>/odometry/y
-duck<J>/odometry/pose -> duck<J>/odometry/pose
-duck<K>/odometry/x -> duck<K>/odometry/x
-duck<K>/odometry/y -> duck<K>/odometry/y
-duck<K>/odometry/pose -> duck<K>/odometry/pose
+duck<J>/odometry/ -> duck<J>/odometry/
+duck<K>/odometry/ -> duck<K>/odometry/
 ```
 Odometry measurements from each other duck

@@ -3,15 +3,14 @@
 import yaml
 import os
 
-HOST = "localhost"
+HOST = "192.168.1.70"
 NUM_DUCKS = 3
 
 RSSI_MSG_TYPE = "std_msgs.msg:Int8"
 DIST_MSG_TYPE = "std_msgs.msg:Float64"
-ODOM_MSG_TYPE = "std_msgs.msg:Float64"
+ODOM_MSG_TYPE = "nav_msgs.msg:Odometry"
 
 DIST_PARAMS = ["filtered_distance", "raw_distance"]
-ODOM_PARAMS = ["x","y","pose"]
 
 def print_list_of_dicts(l):
     for d in l:
@@ -44,10 +43,9 @@ def gen_ros_to_mqtt(this_duck,other_ducks):
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
                     "msg_type": DIST_MSG_TYPE,
-                    "topic_from":"duck{}/odometry/{}".format(this_duck,param),
-                    "topic_to":"duck{}/odometry/{}".format(this_duck,param)
+                    "topic_from":"duck{}/odometry".format(this_duck),
+                    "topic_to":"duck{}/odometry".format(this_duck)
                 }
-                for param in ODOM_PARAMS
             ]
     l = [*rssi,*dist,*odom]
     # print_list_of_dicts(l)
@@ -79,10 +77,10 @@ def gen_mqtt_to_ros(this_duck,other_ducks):
                 {
                     "factory":"mqtt_bridge.bridge:MqttToRosBridge",
                     "msg_type": DIST_MSG_TYPE,
-                    "topic_from":"duck{}/odometry/{}".format(other_duck,param),
-                    "topic_to":"duck{}/odometry/{}".format(other_duck,param)
+                    "topic_from":"duck{}/odometry/".format(other_duck),
+                    "topic_to":"duck{}/odometry/".format(other_duck)
                 }
-                for other_duck in other_ducks for param in ODOM_PARAMS
+                for other_duck in other_ducks
             ]
     l = [*rssi,*dist,*odom]
     # print_list_of_dicts(l)
