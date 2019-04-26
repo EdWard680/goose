@@ -13,7 +13,15 @@ services:
     privileged: true
     network_mode: "host"
     environment:
-      ID: "03"
+      ID: "12"
       DEV_ID: "hci1"
       MACS: ""
+  bridge:
+    build: ./communication
+    privileged: true
+    network_mode: "host"
+    environment:
+      ID: "2"
+      HOST: "bathduck.local"
+      PUB: "0"
     

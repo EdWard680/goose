@@ -19,7 +19,7 @@ def print_list_of_dicts(l):
             print(k,':',v)
         print()
 
-def gen_ros_to_mqtt(this_duck,other_ducks):
+def gen_ros_to_mqtt(this_duck,other_ducks, pubs):
     rssi = [
                 {
                     "factory":"mqtt_bridge.bridge:RosToMqttBridge",
@@ -27,7 +27,7 @@ def gen_ros_to_mqtt(this_duck,other_ducks):
                     "topic_from":"rssi/duck{}_duck{}".format(*pair),
                     "topic_to":"rssi/duck{}_duck{}".format(*pair)
                 }
-                for pair in RSSI_PAIRS if this_duck in pair
+                for pair in RSSI_PAIRS if this_duck in pair and any([x in pair for x in pubs])
             ]
 
     # dist = [
@@ -49,10 +49,11 @@ def gen_ros_to_mqtt(this_duck,other_ducks):
                 }
             ]
     l = [*rssi,*odom]
-    # print_list_of_dicts(l)
+    print("ros to mqtt")
+    print_list_of_dicts(l)
     return l
 
-def gen_mqtt_to_ros(this_duck,other_ducks):
+def gen_mqtt_to_ros(this_duck,other_ducks, pubs):
     ducks = [this_duck, *other_ducks]
     rssi = [
                 {
@@ -61,7 +62,7 @@ def gen_mqtt_to_ros(this_duck,other_ducks):
                     "topic_from":"rssi/duck{}_duck{}".format(*pair),
                     "topic_to":"rssi/duck{}_duck{}".format(*pair)
                 }
-                for pair in RSSI_PAIRS if this_duck not in pair
+                for pair in RSSI_PAIRS if not(this_duck in pair and any([x in pair for x in pubs]))
             ]
 
     # dist = [
@@ -84,17 +85,18 @@ def gen_mqtt_to_ros(this_duck,other_ducks):
                 for other_duck in other_ducks
             ]
     l = [*rssi,*odom]
-    # print_list_of_dicts(l)
+    print("mqtt_to_ros")
+    print_list_of_dicts(l)
     return l
 
-def gen_config_dict(this_duck, other_ducks):
-    a = gen_ros_to_mqtt(this_duck, other_ducks)
-    b = gen_mqtt_to_ros(this_duck, other_ducks)
+def gen_config_dict(this_duck, other_ducks, pubs, host):
+    a = gen_ros_to_mqtt(this_duck, other_ducks, pubs)
+    b = gen_mqtt_to_ros(this_duck, other_ducks, pubs)
     config = {
                 'mqtt': {
                     'connection': 
                     {
-                        'host': 'localhost', 'port': 1883, 'keepalive': 60
+                        'host': host, 'port': 1883, 'keepalive': 60
                     }, 
                     'client': {
                         'protocol': 4
@@ -105,11 +107,13 @@ def gen_config_dict(this_duck, other_ducks):
     return config
 
 if __name__ == '__main__':
-    
-    this_duck = os.environ.get("ID") or -1
-    if this_duck == -1: raise SystemError("ID not set")
+    host = os.environ.get("HOST")
+    this_duck = int(os.environ.get("ID"))
+    pubs = os.environ.get("PUB")
+    pubs = [int(x) for x in pubs.split()]
     other_ducks = [duck for duck in range(NUM_DUCKS) if duck is not this_duck]
-    config = gen_config_dict(this_duck,other_ducks)
+
+    config = gen_config_dict(this_duck, other_ducks, pubs, host)
 
     with open("config.yaml", 'w') as f:
         yaml.dump(config, f)

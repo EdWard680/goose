@@ -1,18 +1,18 @@
 version: '3'
 services:
-  broadcaster:
+  scanner:
     build: ./bt-sensor
     privileged: true
     network_mode: "host"
     environment:
-      ID: "00"
+      ID: "01"
       DEV_ID: "hci0"
-      MACS: ""
+      MACS: "01:01:01:01:01:00 01:01:01:01:01:12"
   bridge:
     build: ./communication
     privileged: true
     network_mode: "host"
     environment:
-      ID: "0"
+      ID: "1"
       HOST: "bathduck.local"
-      PUB: ""
+      PUB: "0 2"
