@@ -11,6 +11,8 @@ import struct
 import array
 import fcntl
 
+RSSI_PAIRS = [[0,1],[0,2],[1,2]]
+
 def read_inquiry_mode(sock):
     """returns the current mode, or -1 on failure"""
     # save current filter
@@ -145,7 +147,10 @@ def talker(btad_list, this_duck):
     rospy.init_node('bluetooth_rssi', anonymous=True)
     pub_list = []
     for i,btad in enumerate(btad_list):
-        pub_list.append(rospy.Publisher("duck{}/rssi/duck{}".format(this_duck, btad[-1]), Int8, queue_size=10))
+        for pair in RSSI_PAIRS:
+            if btad[-1] in pair and this_duck in pair:
+                break
+        pub_list.append(rospy.Publisher("rssi/{}_{}".format(*pair), Int8, queue_size=10))
     
     print("Starting inquiry...")
     for (addr, rssi) in get_rssis(btad_list):

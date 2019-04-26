@@ -10,22 +10,22 @@ If you have Duck I, Duck J, and Duck K, and the the bridge is running on Duck I:
 `ros_topic -> mqtt_topic`
 ### RSSI
 ```
-duck<I>/rssi/duck<M> -> duck<I>/rssi/duck<J>
-duck<I>/rssi/duck<M> -> duck<I>/rssi/duck<K>
+rssi/duck<I>_duck<J> -> rssi/duck<I>_duck<J>
+rssi/duck<I>_duck<K> -> rssi/duck<I>_duck<K>
 ```
-
-### Distances
+I is less than J and K
+<!-- ### Distances
 ```
 duck<I>/filtered_distance/duck<M> -> duck<I>/filtered_distance/duck<J>
 duck<I>/filtered_distance/duck<M> -> duck<I>/filtered_distance/duck<K>
 duck<I>/raw_distance/duck<J> -> duck<I>/raw_distance/duck<J>
 duck<I>/raw_distance/duck<J> -> duck<I>/raw_distance/duck<K>
 ```
-These are the distances measured by duck I to duck J
+These are the distances measured by duck I to duck J -->
 
 ### Odometry
 ```
-duck<I>/odometry/ -> duck<I>/odometry/
+odometry/duck<I> -> odometry/duck<I>
 ```
 Duck I's odometry measurements
 
@@ -33,13 +33,10 @@ Duck I's odometry measurements
 `mqtt_topic -> ros_topic`
 ### RSSI
 ```
-duck<J>/rssi/duck<I> -> duck<J>/rssi/duck<I>
-duck<J>/rssi/duck<K> -> duck<J>/rssi/duck<K>
-duck<K>/rssi/duck<I> -> duck<K>/rssi/duck<I>
-duck<K>/rssi/duck<J> -> duck<K>/rssi/duck<J>
+rssi/duck<J>_duck<K> -> rssi/duck<J>_duck<K>
 ```
-
-### Distances
+J is less than K
+<!-- ### Distances
 ```
 duck<J>/filtered_distance/duck<I> -> duck<J>/filtered_distance/duck<I>
 duck<J>/filtered_distance/duck<K> -> duck<J>/filtered_distance/duck<K>
@@ -50,11 +47,11 @@ duck<J>/raw_distance/duck<K> -> duck<J>/raw_distance/duck<K>
 duck<K>/raw_distance/duck<I> -> duck<J>/raw_distance/duck<I>
 duck<K>/raw_distance/duck<J> -> duck<J>/raw_distance/duck<J>
 ```
-Distances recieved over MQTT measured by duck J/K to each other duck
+Distances recieved over MQTT measured by duck J/K to each other duck -->
 
 ### Odometry
 ```
-duck<J>/odometry/ -> duck<J>/odometry/
-duck<K>/odometry/ -> duck<K>/odometry/
+odometry/duck<J> -> odometry/duck<J>
+odometry/duck<K> -> odometry/duck<K>
 ```
 Odometry measurements from each other duck
