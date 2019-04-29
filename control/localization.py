@@ -157,7 +157,7 @@ def param_or_default(name, default):
 def make_filter():
     var_sensor = param_or_default("var_sensor", 1.5)
     var_vel = param_or_default("var_vel", .00000000001)
-    var_steer = param_or_default("var_steer", .00000000001)
+    var_steer = param_or_default("var_steer", 1)
     A0 = param_or_default("/A0", -40)
     x0 = param_or_default("/x0", 0)
     y0 = param_or_default("/y0", 0)
@@ -205,6 +205,8 @@ class Me(object):
             "/odometry/duck{}".format(THIS_DUCK),
             Odometry,
             queue_size=10)
+		
+        self.pub_pose()
     
     def pub_pose(self):
         rospy.loginfo("Updated position to:\n{}".format(self.ekf.x))
@@ -243,4 +245,5 @@ if __name__ == '__main__':
     
     ducks = [Duck(i, me.on_rssi) for i in duck_ids]
     
+    rospy.loginfo("Starting up")
     rospy.spin()

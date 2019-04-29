@@ -21,10 +21,8 @@ services:
     hostname: "mosquitto"
     expose:
       - "1883"
-      - "9001"
     ports:
       - "1883:1883"
-      - "9001:9001"
   bridge:
     build: ./communication
     depends_on:
@@ -35,4 +33,20 @@ services:
       ID: "2"
       HOST: "bathduck"
       PUB: "0"
-    
+  control:
+    build: ./control
+    privileged: true
+    network_mode: "host"
+    environment:
+      ID: "2"
+      IDS: "0 1"
+      GOOSE: "true"
+  motors:
+    image: duckietown/rpi-duckiebot-joystick-demo:master18
+    privileged: true
+    network_mode: "host"
+    volumes:
+      - duckietown-data:/data
+
+volumes:
+  duckietown-data:

@@ -2,10 +2,14 @@
 	<arg name="pattern" default="circle" />
 	<arg name="goose" default="false" />
 	<arg name="ducks" default="0 1" />
-	
-	<param name="/x0" value="0.5" type="double" if="$(arg goose)" />
+	<arg name="veh" />
 	
 	<node pkg="goose_control" type="localization.py" name="localization_node" args="$(arg ducks)" output="screen">
+		<remap from="cmd_twist" to="/$(arg veh)/forward_kinematics_node/velocity" />
+	</node>
+	
+	<node pkg="goose_control" type="controller.py" name="controller_node" output="screen">
+		<remap from="/twist" to="/$(arg veh)/joy_mapper_node/car_cmd" />
 	</node>
 	
 </launch>
